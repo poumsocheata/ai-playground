@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">AI Project Detail</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Rajdhani -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #E6F7E6; /* Very light green */
+            color: #334155; /* Softer dark gray for text */
+        }
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-track {
+            background: #D4EDD4;
+            border-radius: 10px;
+        }
+        body::-webkit-scrollbar-thumb {
+            background: #8BC34A;
+            border-radius: 10px;
+        }
+        body::-webkit-scrollbar-thumb:hover {
+            background: #689F38;
+        }
+        .project-embed {
+            width: 100%;
+            height: 500px; /* Standard height for embedded projects */
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: none;
+        }
+        @media (max-width: 768px) {
+            .project-embed {
+                height: 400px;
+            }
+        }
+        [contenteditable="true"] {
+            border: 1px solid #cbd5e1; /* Light gray border */
+            padding: 1rem;
+            border-radius: 0.75rem;
+            min-height: 150px; /* Ensure enough space for writing */
+            outline: none; /* Remove default focus outline */
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        [contenteditable="true"]:focus {
+            border-color: #8BC34A; /* Green border on focus */
+            box-shadow: 0 0 0 3px rgba(139, 195, 74, 0.3); /* Soft green glow */
+        }
+        .resource-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .resource-input-group input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 0.5rem;
+        }
+        .resource-icon-color-pdf { color: #EF4444; } /* Red */
+        .resource-icon-color-image { color: #22C55E; } /* Green */
+        .resource-icon-color-video { color: #3B82F6; } /* Blue */
+        .resource-bg-color-pdf { background-color: #FEF2F2; } /* Light Red */
+        .resource-bg-color-image { background-color: #F0FDF4; } /* Light Green */
+        .resource-bg-color-video { background-color: #EFF6FF; } /* Light Blue */
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by the Canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app;
+        let db;
+        let auth;
+        let userId = null;
+        let currentProjectData = null; // Store current project data to manage edits
+
+        // Initialize Firebase
+        if (Object.keys(firebaseConfig).length > 0) {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // Listen for authentication state changes
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    console.log("Authenticated as:", userId);
+                    document.getElementById('auth-status').textContent = `Logged in as: ${userId}`;
+                    document.getElementById('auth-status').classList.remove('hidden');
+                    // Once authenticated, render project details
+                    renderProjectDetails();
+                } else {
+                    userId = null;
+                    console.log("No user signed in. Attempting anonymous sign-in...");
+                    document.getElementById('auth-status').textContent = `Not logged in. Attempting anonymous sign-in...`;
+                    document.getElementById('auth-status').classList.remove('hidden');
+                    try {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Firebase Auth Error:", error);
+                        document.getElementById('auth-status').textContent = `Authentication failed: ${error.message}`;
+                    }
+                }
+            });
+        } else {
+            console.error("Firebase config is missing or invalid. Firebase will not be initialized.");
+            document.getElementById('auth-status').textContent = `Firebase not configured. Content editing/saving will not work.`;
+            document.getElementById('auth-status').classList.remove('hidden');
+        }
+
+        // Expose Firebase functions to the global scope for use in the main script
+        window.firebaseApp = app;
+        window.firestoreDb = db;
+        window.firebaseAuth = auth;
+        window.getFirestoreDoc = getDoc;
+        window.setFirestoreDoc = setDoc;
+        window.updateFirestoreDoc = updateDoc;
+        window.firestoreCollection = collection;
+        window.firestoreDoc = doc;
+        window.getAppId = () => appId;
+        window.getUserId = () => userId;
+        window.getCurrentProjectData = () => currentProjectData;
+        window.setCurrentProjectData = (data) => { currentProjectData = data; };
+    </script>
+
+
+    <!-- Header/Navigation -->
+    <header class="bg-white shadow-md py-4 sticky top-0 z-20">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-extrabold text-teal-600 flex items-center">
+                <span class="mr-2 text-3xl">🤖</span> AI Playground <span class="ml-2 text-xl">💡</span>
+            </a>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="index.html" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">Home 🏡</a></li>
+                    <li><a href="index.html#projects" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">Adventures! 🚀</a></li>
+                    <li><a href="all-adventures.html" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">All Adventures! ✨</a></li>
+                    <li><a href="index.html#about" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">About AI 🤔</a></li>
+                    <li><a href="index.html#contact" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">Connect! 👋</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 py-12">
+        <div class="max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow-xl">
+            <p id="auth-status" class="text-center text-sm text-gray-500 mb-4 hidden"></p>
+            
+            <div class="flex justify-between items-center mb-8">
+                <button onclick="window.location.href='index.html#projects'" class="inline-flex items-center text-teal-600 hover:text-teal-800 font-semibold transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    Back to All Adventures
+                </button>
+                <div class="flex items-center space-x-2">
+                    <label for="admin-mode-toggle" class="text-gray-700 font-medium">Admin Mode:</label>
+                    <input type="checkbox" id="admin-mode-toggle" class="h-5 w-5 text-teal-600 rounded border-gray-300 focus:ring-teal-500 cursor-pointer">
+                </div>
+            </div>
+
+            <h1 id="project-detail-title" contenteditable="false" class="text-4xl md:text-5xl font-extrabold text-teal-800 mb-6 text-center">Project Title</h1>
+            <input type="text" id="project-image-url-input" class="w-full p-2 border border-gray-300 rounded-lg hidden mb-4" placeholder="Image URL">
+            <input type="text" id="project-embed-link-input" class="w-full p-2 border border-gray-300 rounded-lg hidden mb-4" placeholder="Embed Link (e.g., Scratch embed, game URL)">
+
+            <!-- Embedded Project -->
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-teal-700 mb-4 text-center">Try it Out! 🎮</h2>
+                <iframe id="project-embed-iframe" class="project-embed" src="" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+            </div>
+
+            <!-- Project Description (now editable) -->
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-teal-700 mb-4">About This Adventure:</h2>
+                <div id="project-long-description" contenteditable="false" class="text-gray-700 text-lg leading-relaxed"></div>
+                
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <span class="bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded-full">Super Skills: <span id="project-skills" contenteditable="false"></span> 💪</span>
+                    <span class="bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded-full">Grade Levels: <span id="project-grades" contenteditable="false"></span> 🎒</span>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-2 items-center">
+                    <span class="font-semibold text-gray-700">Cool Tags:</span>
+                    <div id="project-tags-display" class="flex flex-wrap gap-2"></div>
+                    <input type="text" id="project-tags-input" class="p-2 border border-gray-300 rounded-lg flex-grow hidden" placeholder="Add tags, comma separated (e.g., Beginner, Interactive)">
+                </div>
+                
+            </div>
+
+            <!-- Downloadable Resources -->
+            <div id="resources-section" class="mb-10">
+                <h2 class="text-3xl font-bold text-teal-700 mb-4">Download & Learn More! 📖⬇️</h2>
+                <div id="resource-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    </div>
+                <p id="no-resources-message" class="text-gray-600 italic hidden mt-4">No extra super goodies for this adventure yet! 😔</p>
+
+                <div id="resource-editor-area" class="mt-6 hidden">
+                    <h3 class="text-xl font-bold text-teal-700 mb-3">Edit Resources:</h3>
+                    <div id="resource-input-container">
+                        <!-- Resource input fields will be dynamically added here -->
+                    </div>
+                    <button id="add-resource-btn" class="mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-colors duration-200">
+                        Add New Resource
+                    </button>
+                </div>
+            </div>
+
+            <button id="save-project-btn" class="mt-4 px-6 py-3 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 transition-colors duration-200 w-full hidden">
+                Save Project Changes ✅
+            </button>
+            <p id="save-status-message" class="text-center text-sm mt-2 hidden"></p>
+
+            <!-- Error Message for Missing Project -->
+            <div id="project-not-found" class="hidden text-center p-8 bg-red-100 text-red-700 rounded-lg shadow-inner">
+                <h2 class="text-3xl font-bold mb-4">Oops! Adventure Not Found 😔</h2>
+                <p class="text-lg">It looks like the AI adventure you're looking for doesn't exist or has moved. Please go back to the main projects page.</p>
+                <button onclick="window.location.href='index.html#projects'" class="inline-flex items-center px-6 py-3 mt-6 bg-red-500 text-white font-semibold rounded-full hover:bg-red-600 transition-colors duration-200">
+                    Back to Projects
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 px-4 mt-16">
+        <div class="container mx-auto text-center text-sm">
+            <p class="mb-2">© 2025 AI Playground. All rights reserved. Made with ❤️ for young explorers! 🧑‍🚀</p>
+            <p>Contact us: <a href="mailto:hello@aiplayground.com" class="text-blue-300 hover:underline">hello@aiplayground.com</a> 📧</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Import Firestore functions exposed globally by the first script
+        const db = window.firestoreDb;
+        const getFirestoreDoc = window.getFirestoreDoc;
+        const setFirestoreDoc = window.setFirestoreDoc;
+        const updateFirestoreDoc = window.updateFirestoreDoc;
+        const firestoreCollection = window.firestoreCollection;
+        const firestoreDoc = window.firestoreDoc;
+        const getAppId = window.getAppId;
+        const getUserId = window.getUserId;
+        const setCurrentProjectData = window.setCurrentProjectData; // Setter for currentProjectData
+
+        // --- DOM Elements ---
+        const pageTitle = document.getElementById('page-title');
+        const projectDetailTitle = document.getElementById('project-detail-title');
+        const projectImageUrlInput = document.getElementById('project-image-url-input');
+        const projectEmbedLinkInput = document.getElementById('project-embed-link-input');
+        const projectEmbedIframe = document.getElementById('project-embed-iframe');
+        const projectLongDescription = document.getElementById('project-long-description');
+        const projectSkills = document.getElementById('project-skills');
+        const projectGrades = document.getElementById('project-grades');
+        const projectTagsDisplay = document.getElementById('project-tags-display');
+        const projectTagsInput = document.getElementById('project-tags-input');
+        const resourcesSection = document.getElementById('resources-section');
+        const resourceList = document.getElementById('resource-list');
+        const noResourcesMessage = document.getElementById('no-resources-message');
+        const resourceEditorArea = document.getElementById('resource-editor-area');
+        const resourceInputContainer = document.getElementById('resource-input-container');
+        const addResourceBtn = document.getElementById('add-resource-btn');
+        const saveProjectBtn = document.getElementById('save-project-btn');
+        const saveStatusMessage = document.getElementById('save-status-message');
+        const projectNotFound = document.getElementById('project-not-found');
+        const adminModeToggle = document.getElementById('admin-mode-toggle');
+
+        let currentProjectId = null;
+        let isEditMode = false;
+
+        /**
+         * Parses URL parameters to get the project ID.
+         * @returns {string | null} The project ID or null if not found.
+         */
+        function getProjectIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        /**
+         * Toggles the edit mode for the page.
+         * @param {boolean} enable - True to enable edit mode, false to disable.
+         */
+        function toggleEditMode(enable) {
+            isEditMode = enable;
+            projectDetailTitle.contentEditable = enable;
+            projectLongDescription.contentEditable = enable;
+            projectSkills.contentEditable = enable;
+            projectGrades.contentEditable = enable;
+
+            // Toggle visibility/editability of input fields and buttons
+            projectImageUrlInput.classList.toggle('hidden', !enable);
+            projectEmbedLinkInput.classList.toggle('hidden', !enable);
+            projectTagsInput.classList.toggle('hidden', !enable);
+            projectTagsDisplay.classList.toggle('hidden', enable); // Hide tags display when input is active
+            resourceEditorArea.classList.toggle('hidden', !enable);
+            saveProjectBtn.classList.toggle('hidden', !enable);
+
+            if (enable) {
+                // Populate input fields with current data for editing
+                projectImageUrlInput.value = window.getCurrentProjectData()?.imageUrl || '';
+                projectEmbedLinkInput.value = window.getCurrentProjectData()?.link || '';
+                projectTagsInput.value = window.getCurrentProjectData()?.tags?.join(', ') || '';
+                renderResourceInputs(window.getCurrentProjectData()?.resources || []);
+            } else {
+                // When exiting edit mode, re-render tags display if tags input was used
+                renderTags(window.getCurrentProjectData()?.tags || []);
+                renderResources(window.getCurrentProjectData()?.resources || []);
+            }
+        }
+
+        /**
+         * Renders the project details on the page from Firestore.
+         */
+        async function renderProjectDetails() {
+            currentProjectId = getProjectIdFromUrl();
+
+            if (!getAppId() || !db || !getUserId()) {
+                console.warn("Firebase not fully initialized. Cannot fetch project data yet.");
+                // Wait for Firebase to be ready (handled by onAuthStateChanged)
+                document.querySelector('main > div').classList.add('hidden'); // Hide content initially
+                return;
+            }
+
+            if (!currentProjectId) {
+                projectNotFound.classList.remove('hidden');
+                document.querySelector('main > div').classList.add('hidden');
+                return;
+            }
+
+            const projectRef = firestoreDoc(db, "artifacts", getAppId(), "public", "data", "projects", currentProjectId);
+
+            try {
+                const docSnap = await getFirestoreDoc(projectRef);
+
+                if (docSnap.exists()) {
+                    const project = docSnap.data();
+                    setCurrentProjectData(project); // Store fetched data
+                    
+                    document.getElementById('page-title').textContent = `AI Playground - ${project.title}`;
+                    projectDetailTitle.textContent = project.title;
+                    projectEmbedIframe.src = project.link;
+                    projectLongDescription.textContent = project.longDescription;
+                    projectSkills.textContent = project.skills ? project.skills.join(', ') : '';
+                    projectGrades.textContent = project.grades ? project.grades.join(', ') : '';
+                    renderTags(project.tags || []);
+                    renderResources(project.resources || []);
+                    
+                    projectNotFound.classList.add('hidden'); // Hide not found message if it was shown
+                    document.querySelector('main > div').classList.remove('hidden'); // Show content
+
+                } else {
+                    console.log("No such project found in Firestore!");
+                    projectNotFound.classList.remove('hidden');
+                    document.querySelector('main > div').classList.add('hidden');
+                }
+            } catch (error) {
+                console.error("Error fetching project from Firestore:", error);
+                projectNotFound.classList.remove('hidden');
+                document.querySelector('main > div').classList.add('hidden');
+            }
+        }
+
+        /**
+         * Renders the tags as clickable spans.
+         * @param {Array<string>} tags - Array of tags.
+         */
+        function renderTags(tags) {
+            projectTagsDisplay.innerHTML = '';
+            if (tags && tags.length > 0) {
+                tags.forEach(tag => {
+                    const span = document.createElement('span');
+                    span.className = 'bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full';
+                    span.textContent = tag;
+                    projectTagsDisplay.appendChild(span);
+                });
+            }
+        }
+
+        /**
+         * Renders the downloadable resources for the project.
+         * @param {Array} resources - An array of resource objects.
+         */
+        function renderResources(resources) {
+            resourceList.innerHTML = ''; // Clear existing resources
+            if (resources && resources.length > 0) {
+                noResourcesMessage.classList.add('hidden');
+                resources.forEach(resource => {
+                    let iconSvg = '';
+                    let bgColorClass = '';
+                    let textColorClass = '';
+                    switch (resource.type) {
+                        case 'pdf':
+                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 resource-icon-color-pdf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>`;
+                            bgColorClass = 'resource-bg-color-pdf';
+                            textColorClass = 'text-red-800';
+                            break;
+                        case 'image':
+                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 resource-icon-color-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`;
+                            bgColorClass = 'resource-bg-color-image';
+                            textColorClass = 'text-green-800';
+                            break;
+                        case 'video':
+                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 resource-icon-color-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"/><path d="m10 8 6 4-6 4V8z"/></svg>`;
+                            bgColorClass = 'resource-bg-color-video';
+                            textColorClass = 'text-blue-800';
+                            break;
+                        default:
+                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13.5V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6.5zm8.5-11V7H20"/></svg>`;
+                            bgColorClass = 'bg-gray-50';
+                            textColorClass = 'text-gray-800';
+                    }
+
+                    const resourceItem = document.createElement('a');
+                    resourceItem.href = resource.url;
+                    resourceItem.target = "_blank"; // Open in new tab
+                    resourceItem.rel = "noopener noreferrer";
+                    resourceItem.className = `flex items-center p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 ${bgColorClass} ${textColorClass} font-semibold`;
+                    resourceItem.innerHTML = `${iconSvg}<span>${resource.name}</span>`;
+                    resourceList.appendChild(resourceItem);
+                });
+            } else {
+                noResourcesMessage.classList.remove('hidden');
+            }
+        }
+
+        /**
+         * Renders input fields for editing resources.
+         * @param {Array} resources - The current resources data.
+         */
+        function renderResourceInputs(resources) {
+            resourceInputContainer.innerHTML = ''; // Clear existing inputs
+            resources.forEach((resource, index) => {
+                const div = document.createElement('div');
+                div.className = 'resource-input-group';
+                div.innerHTML = `
+                    <select class="p-2 border border-gray-300 rounded-lg" data-resource-field="type">
+                        <option value="pdf" ${resource.type === 'pdf' ? 'selected' : ''}>PDF</option>
+                        <option value="image" ${resource.type === 'image' ? 'selected' : ''}>Image</option>
+                        <option value="video" ${resource.type === 'video' ? 'selected' : ''}>Video</option>
+                    </select>
+                    <input type="text" class="p-2 border border-gray-300 rounded-lg flex-grow" placeholder="Resource Name" value="${resource.name}" data-resource-field="name">
+                    <input type="text" class="p-2 border border-gray-300 rounded-lg flex-grow" placeholder="Resource URL" value="${resource.url}" data-resource-field="url">
+                    <button class="px-3 py-2 bg-red-500 text-white rounded-full hover:bg-red-600" data-action="remove-resource" data-index="${index}">🗑️</button>
+                `;
+                resourceInputContainer.appendChild(div);
+            });
+
+            // Add event listener for removing resources
+            resourceInputContainer.querySelectorAll('[data-action="remove-resource"]').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const indexToRemove = parseInt(event.target.dataset.index);
+                    const currentResources = getEditedResources();
+                    currentResources.splice(indexToRemove, 1);
+                    renderResourceInputs(currentResources); // Re-render inputs to update indices
+                });
+            });
+        }
+
+        /**
+         * Gathers data from resource input fields.
+         * @returns {Array} An array of resource objects.
+         */
+        function getEditedResources() {
+            const resources = [];
+            resourceInputContainer.querySelectorAll('.resource-input-group').forEach(group => {
+                const type = group.querySelector('[data-resource-field="type"]').value;
+                const name = group.querySelector('[data-resource-field="name"]').value;
+                const url = group.querySelector('[data-resource-field="url"]').value;
+                if (name && url) { // Only add if name and URL are provided
+                    resources.push({ type, name, url });
+                }
+            });
+            return resources;
+        }
+
+        /**
+         * Adds a new empty resource input row.
+         */
+        function addNewResourceInput() {
+            const newResources = getEditedResources(); // Get existing resources
+            newResources.push({ type: 'pdf', name: '', url: '' }); // Add a new empty one
+            renderResourceInputs(newResources);
+        }
+
+        /**
+         * Saves the current project data to Firestore.
+         */
+        async function saveProjectChanges() {
+            if (!currentProjectId || !db || !getUserId()) {
+                saveStatusMessage.textContent = "Error: Not authenticated or project ID missing.";
+                saveStatusMessage.style.color = 'red';
+                saveStatusMessage.classList.remove('hidden');
+                return;
+            }
+
+            saveStatusMessage.textContent = "Saving changes... ⏳";
+            saveStatusMessage.style.color = 'gray';
+            saveStatusMessage.classList.remove('hidden');
+
+            const updatedData = {
+                title: projectDetailTitle.textContent,
+                longDescription: projectLongDescription.textContent,
+                imageUrl: projectImageUrlInput.value,
+                link: projectEmbedLinkInput.value,
+                skills: projectSkills.textContent.split(',').map(s => s.trim()).filter(s => s),
+                grades: projectGrades.textContent.split(',').map(g => g.trim()).filter(g => g),
+                tags: projectTagsInput.value.split(',').map(t => t.trim()).filter(t => t),
+                resources: getEditedResources()
+            };
+
+            const projectRef = firestoreDoc(db, "artifacts", getAppId(), "public", "data", "projects", currentProjectId);
+
+            try {
+                await setFirestoreDoc(projectRef, updatedData, { merge: true }); // Use set with merge to update existing fields
+                window.setCurrentProjectData(updatedData); // Update local data
+                saveStatusMessage.textContent = "Changes saved successfully! ✅";
+                saveStatusMessage.style.color = 'green';
+                // Reload project details to reflect changes and exit edit mode visually
+                await renderProjectDetails();
+                adminModeToggle.checked = false; // Turn off admin mode after saving
+                toggleEditMode(false);
+            } catch (error) {
+                console.error("Error saving project to Firestore:", error);
+                saveStatusMessage.textContent = `Error saving: ${error.message} ❌`;
+                saveStatusMessage.style.color = 'red';
+            }
+        }
+
+        // --- Event Listeners ---
+        adminModeToggle.addEventListener('change', (event) => {
+            toggleEditMode(event.target.checked);
+        });
+        addResourceBtn.addEventListener('click', addNewResourceInput);
+        saveProjectBtn.addEventListener('click', saveProjectChanges);
+
+        // --- Initial Load ---
+        // Ensure renderProjectDetails is called only after Firebase is initialized
+        // This is handled by the onAuthStateChanged listener in the first script tag.
+        // If the listener runs before this script, renderProjectDetails will be called directly.
+        // If this script runs first, the globally exposed functions will be available when the listener runs.
+    </script>
+</body>
+</html>

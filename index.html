@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Playground - Explore Artificial Intelligence</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Rajdhani (Quietly techy/futuristic) -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif; /* New techy font */
+            background-color: #E6F7E6; /* Very light green, inspired by the park */
+            color: #334155; /* Softer dark gray for readability */
+        }
+        /* Custom scrollbar for better aesthetics */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-track {
+            background: #D4EDD4; /* Lighter green track */
+            border-radius: 10px;
+        }
+        body::-webkit-scrollbar-thumb {
+            background: #8BC34A; /* Playful green thumb */
+            border-radius: 10px;
+        }
+        body::-webkit-scrollbar-thumb:hover {
+            background: #689F38; /* Darker green on hover */
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Header/Navigation -->
+    <header class="bg-white shadow-md py-4 sticky top-0 z-20">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-extrabold text-teal-600 flex items-center">
+                <span class="mr-2 text-3xl">🤖</span> AI Playground <span class="ml-2 text-xl">💡</span>
+            </a>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="#" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">Home 🏡</a></li>
+                    <li><a href="#projects" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">Adventures! 🚀</a></li>
+                    <li><a href="all-adventures.html" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">All Adventures! ✨</a></li> <!-- New link -->
+                    <li><a href="#about" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">About AI 🤔</a></li>
+                    <li><a href="#contact" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">Connect! 👋</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-green-400 to-blue-500 text-white py-20 px-4 text-center rounded-b-3xl shadow-xl">
+        <div class="container mx-auto max-w-4xl">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+                Unlock the <span class="text-yellow-200">Secrets</span> of <span class="text-yellow-200">Artificial Intelligence</span>! ✨🧠
+            </h1>
+            <p class="text-lg md:text-xl mb-8 opacity-90">
+                Jump into super fun games and easy explanations to discover how AI works its magic! 🎮💡
+                Made just for smart, curious kids like YOU! 🧑‍💻👧
+            </p>
+            <a href="all-adventures.html" class="inline-flex items-center justify-center px-8 py-4 bg-yellow-300 text-green-800 font-bold text-lg rounded-full shadow-lg hover:bg-yellow-200 transition-all duration-300 transform hover:scale-105">
+                Explore All Adventures! 🚀
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a href="#projects" class="inline-flex items-center justify-center px-8 py-4 mt-4 md:mt-0 md:ml-4 bg-white text-teal-800 font-bold text-lg rounded-full shadow-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+                Start Learning Now! 📚
+            </a>
+        </div>
+    </section>
+
+    <!-- Projects/Features Section -->
+    <section id="projects" class="py-16 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center text-teal-700 mb-12">Our Awesome AI Adventures! 🌈🤖</h2>
+
+            <!-- Filter Section -->
+            <div class="flex flex-col md:flex-row justify-center gap-4 mb-12 p-4 bg-white rounded-xl shadow-md">
+                <div class="flex-1 min-w-[200px]">
+                    <label for="skill-filter" class="block text-gray-700 text-sm font-bold mb-2">Filter by Super Skill: ✨</label>
+                    <select id="skill-filter" class="shadow border border-teal-200 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+                        <option value="all">All Super Skills</option>
+                        </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label for="grade-filter" class="block text-gray-700 text-sm font-bold mb-2">Filter by Grade Level: 🎒</label>
+                    <select id="grade-filter" class="shadow border border-teal-200 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+                        <option value="all">All Grade Levels</option>
+                        </select>
+                </div>
+            </div>
+
+            <!-- Project Cards Container -->
+            <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+            <p id="no-projects-message" class="text-center text-gray-600 text-xl mt-8 hidden">Oops! No adventures match your filters. Try adjusting them! 😔</p>
+        </div>
+    </section>
+
+    <!-- About AI Section -->
+    <section id="about" class="bg-teal-50 py-16 px-4 rounded-xl mx-auto container max-w-4xl shadow-lg">
+        <div class="text-center">
+            <h2 class="text-4xl font-bold text-teal-800 mb-6">What is Artificial Intelligence? 🤔💡</h2>
+            <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                Imagine teaching a computer to think and learn, just like you do! 🤩 That's what Artificial Intelligence (AI) is all about. It's a super cool part of computer science that helps machines understand, solve problems, and even be creative! 🎨🤖
+            </p>
+            <p class="text-700 text-lg leading-relaxed">
+                From helping us find awesome stuff online to powering your favorite games, AI is everywhere! 🌍🎮 Our AI Playground is here to make learning about these amazing technologies easy and exciting for curious minds like yours. Let's explore together! 🚀🌟
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gray-800 text-white py-8 px-4 mt-16">
+        <div class="container mx-auto text-center text-sm">
+            <p class="mb-2">&copy; 2025 AI Playground. All rights reserved. Made with ❤️ for young explorers! 🧑‍🚀</p>
+            <p>Contact us: <a href="mailto:hello@aiplayground.com" class="text-blue-300 hover:underline">hello@aiplayground.com</a> 📧</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Project Data ---
+        // This array holds all the information for your AI projects.
+        // Each object includes details like title, description, image, link,
+        // associated skills, suitable grades, and tags.
+        const projects = [
+            {
+                id: 'flashcards',
+                title: 'AI Explorer Flashcards',
+                description: 'Learn fundamental AI concepts with interactive flashcards and test your knowledge with a fun quiz. Available in English and Khmer! 📚🧠',
+                imageUrl: 'https://placehold.co/600x350/A78BFA/FFFFFF?text=Flashcards+%F0%9F%8C%88', // Playful image
+                link: 'project-detail.html?id=flashcards', // Link to the detail page
+                skills: ['Digital Literacy', 'Vocabulary', 'Critical Thinking'],
+                grades: ['Grades 4-5', 'Grades 6-7'],
+                tags: ['Beginner', 'Interactive', 'Quiz', 'Multilingual']
+            },
+            {
+                id: 'image-recognition',
+                title: 'See Like an AI: Image Recognition',
+                description: 'Discover how AI can "see" and identify objects in pictures. A simple demo to understand computer vision. 👀📸',
+                imageUrl: 'https://placehold.co/600x350/FCD34D/334155?text=AI+Eyes+%F0%9F%91%80',
+                link: 'project-detail.html?id=image-recognition', // Link to the detail page
+                skills: ['Computer Vision', 'Pattern Recognition', 'Observation'],
+                grades: ['Grades 6-7', 'Grades 8-9'],
+                tags: ['Intermediate', 'Demo', 'Visual']
+            },
+            {
+                id: 'chatbot-basics',
+                title: 'Talk to an AI: Chatbot Basics',
+                description: 'Engage with a simple chatbot to understand how AI can understand and respond to human language. 💬🤖',
+                imageUrl: 'https://placehold.co/600x350/A78BFA/FFFFFF?text=Chatbot+%F0%9F%92%AC',
+                link: 'project-detail.html?id=chatbot-basics', // Link to the detail page
+                skills: ['Natural Language Processing', 'Communication', 'Interaction'],
+                grades: ['Grades 5-6', 'Grades 7-8'],
+                tags: ['Beginner', 'Interactive', 'Language']
+            },
+            {
+                id: 'scratch-project',
+                title: 'Build Your Own AI Story (Scratch)',
+                description: 'Use MIT Scratch to create a simple interactive story where characters respond using basic AI logic. 💻🐱',
+                imageUrl: 'https://placehold.co/600x350/FFECB3/6A1B9A?text=Scratch+AI+%F0%9F%92%BB',
+                link: 'project-detail.html?id=scratch-project', // Link to the detail page
+                skills: ['Coding', 'Problem Solving', 'Logic', 'Computational Thinking'],
+                grades: ['Grades 4-5', 'Grades 6-7'],
+                tags: ['Beginner', 'Coding', 'Interactive', 'Scratch']
+            },
+            {
+                id: 'recommendation-systems',
+                title: 'AI Suggestions: Recommendation Systems',
+                description: 'Learn how AI suggests movies, music, or products you might like, based on your preferences. 👍🎬',
+                imageUrl: 'https://placehold.co/600x350/FCA5A5/FFFFFF?text=AI+Recommends+%F0%9F%91%8D',
+                link: 'project-detail.html?id=recommendation-systems', // Link to the detail page
+                skills: ['Data Analysis', 'Pattern Recognition', 'Decision Making'],
+                grades: ['Grades 7-8', 'Grades 9-10'],
+                tags: ['Intermediate', 'Data', 'Everyday AI']
+            },
+            {
+                id: 'ai-in-games',
+                title: 'Playing with AI: Games & Strategy',
+                description: 'Explore how AI characters in games make decisions and challenge players. 🎮👾',
+                imageUrl: 'https://placehold.co/600x350/81C784/FFFFFF?text=Game+AI+%F0%9F%8E%AE',
+                link: 'project-detail.html?id=ai-in-games', // Link to the detail page
+                skills: ['Problem Solving', 'Strategy', 'Logic'],
+                grades: ['Grades 4-5', 'Grades 6-7', 'Grades 8-9'],
+                tags: ['Fun', 'Strategy', 'Interactive']
+            },
+            {
+                id: 'ethical-ai',
+                title: 'Being Fair: The Ethics of AI',
+                description: 'A discussion starter on how we can make sure AI is used responsibly and fairly for everyone. ⚖️🤝',
+                imageUrl: 'https://placehold.co/600x350/FFD700/334155?text=Fair+AI+%E2%9A%96%EF%B8%8F',
+                link: 'project-detail.html?id=ethical-ai', // Link to the detail page
+                skills: ['Ethics', 'Critical Thinking', 'Social Impact'],
+                grades: ['Grades 7-8', 'Grades 9-10', 'Grades 11-12'],
+                tags: ['Advanced', 'Discussion', 'Responsibility']
+            }
+        ];
+
+        // --- DOM Elements ---
+        const projectsContainer = document.getElementById('projects-container');
+        const skillFilter = document.getElementById('skill-filter');
+        const gradeFilter = document.getElementById('grade-filter');
+        const noProjectsMessage = document.getElementById('no-projects-message');
+
+        // --- View Count Storage Key ---
+        const VIEW_COUNTS_KEY = 'aiPlaygroundViewCounts';
+
+        // --- Functions ---
+
+        /**
+         * Loads view counts from localStorage.
+         * @returns {Object} An object mapping project IDs to their view counts.
+         */
+        function loadViewCounts() {
+            try {
+                const storedCounts = localStorage.getItem(VIEW_COUNTS_KEY);
+                return storedCounts ? JSON.parse(storedCounts) : {};
+            } catch (e) {
+                console.error("Error loading view counts from localStorage:", e);
+                return {};
+            }
+        }
+
+        /**
+         * Saves view counts to localStorage.
+         * @param {Object} counts - The object mapping project IDs to their view counts.
+         */
+        function saveViewCounts(counts) {
+            try {
+                localStorage.setItem(VIEW_COUNTS_KEY, JSON.stringify(counts));
+            } catch (e) {
+                console.error("Error saving view counts to localStorage:", e);
+            }
+        }
+
+        /**
+         * Increments the view count for a specific project and saves it.
+         * @param {string} projectId - The ID of the project to increment.
+         */
+        function incrementViewCount(projectId) {
+            const viewCounts = loadViewCounts();
+            viewCounts[projectId] = (viewCounts[projectId] || 0) + 1;
+            saveViewCounts(viewCounts);
+            // Re-render projects to show updated count immediately
+            renderProjects();
+        }
+
+        /**
+         * Renders the project cards based on current filters.
+         */
+        function renderProjects() {
+            projectsContainer.innerHTML = ''; // Clear existing projects
+            const selectedSkill = skillFilter.value;
+            const selectedGrade = gradeFilter.value;
+            const viewCounts = loadViewCounts();
+
+            const filteredProjects = projects.filter(project => {
+                const matchesSkill = selectedSkill === 'all' || project.skills.includes(selectedSkill);
+                const matchesGrade = selectedGrade === 'all' || project.grades.includes(selectedGrade);
+                return matchesSkill && matchesGrade;
+            });
+
+            if (filteredProjects.length === 0) {
+                noProjectsMessage.classList.remove('hidden');
+            } else {
+                noProjectsMessage.classList.add('hidden');
+                filteredProjects.forEach(project => {
+                    const projectCard = document.createElement('div');
+                    projectCard.className = 'bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col';
+                    projectCard.innerHTML = `
+                        <img src="${project.imageUrl}" alt="${project.title}" class="w-full h-48 object-cover">
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="text-2xl font-bold text-teal-700 mb-3">${project.title}</h3>
+                            <p class="text-gray-600 mb-4 flex-grow">
+                                ${project.description}
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                ${project.tags.map(tag => `<span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${tag}</span>`).join('')}
+                            </div>
+                            <div class="flex items-center justify-between mt-auto">
+                                <a href="${project.link}" class="inline-block bg-teal-500 text-white font-semibold py-3 px-6 rounded-full text-center hover:bg-teal-600 transition-colors duration-200 self-start" data-project-id="${project.id}">
+                                    ${project.id === 'flashcards' ? 'Play Now! 🚀' : 'Explore Demo! ✨'}
+                                </a>
+                                <span class="text-gray-500 text-sm flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 text-yellow-500" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                                    ${viewCounts[project.id] || 0} Views
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    projectsContainer.appendChild(projectCard);
+                });
+
+                // Add event listeners for view count increment after cards are rendered
+                projectsContainer.querySelectorAll('a[data-project-id]').forEach(link => {
+                    link.addEventListener('click', (event) => {
+                        const projectId = event.target.dataset.projectId;
+                        if (projectId) {
+                            incrementViewCount(projectId);
+                        }
+                    });
+                });
+            }
+        }
+
+        /**
+         * Populates the skill and grade filter dropdowns.
+         */
+        function populateFilters() {
+            const allSkills = new Set();
+            const allGrades = new Set();
+
+            projects.forEach(project => {
+                project.skills.forEach(skill => allSkills.add(skill));
+                project.grades.forEach(grade => allGrades.add(grade));
+            });
+
+            // Populate Skill Filter
+            Array.from(allSkills).sort().forEach(skill => {
+                const option = document.createElement('option');
+                option.value = skill;
+                option.textContent = skill;
+                skillFilter.appendChild(option);
+            });
+
+            // Populate Grade Filter
+            // Custom sort for grades to ensure logical order (e.g., "Grades 4-5" before "Grades 6-7")
+            const sortedGrades = Array.from(allGrades).sort((a, b) => {
+                const numA = parseInt(a.match(/\d+/)[0]);
+                const numB = parseInt(b.match(/\d+/)[0]);
+                return numA - numB;
+            });
+            sortedGrades.forEach(grade => {
+                const option = document.createElement('option');
+                option.value = grade;
+                option.textContent = grade;
+                gradeFilter.appendChild(option);
+            });
+        }
+
+        // --- Event Listeners ---
+        skillFilter.addEventListener('change', renderProjects);
+        gradeFilter.addEventListener('change', renderProjects);
+
+        // --- Initial Load ---
+        window.onload = function() {
+            populateFilters(); // Populate dropdowns first
+            renderProjects();   // Then render projects based on initial filters
+        };
+    </script>
+</body>
+</html>

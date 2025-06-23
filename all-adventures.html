@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All AI Adventures - AI Playground</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Rajdhani -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #E6F7E6; /* Very light green */
+            color: #334155;
+        }
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-track {
+            background: #D4EDD4;
+            border-radius: 10px;
+        }
+        body::-webkit-scrollbar-thumb {
+            background: #8BC34A;
+            border-radius: 10px;
+        }
+        body::-webkit-scrollbar-thumb:hover {
+            background: #689F38;
+        }
+        .project-embed {
+            width: 100%;
+            height: 500px; /* Standard height for embedded projects */
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: none;
+        }
+        @media (max-width: 768px) {
+            .project-embed {
+                height: 400px;
+            }
+        }
+        .resource-icon-color-pdf { color: #EF4444; } /* Red */
+        .resource-icon-color-image { color: #22C55E; } /* Green */
+        .resource-icon-color-video { color: #3B82F6; } /* Blue */
+        .resource-bg-color-pdf { background-color: #FEF2F2; } /* Light Red */
+        .resource-bg-color-image { background-color: #F0FDF4; } /* Light Green */
+        .resource-bg-color-video { background-color: #EFF6FF; } /* Light Blue */
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Header/Navigation (Consistent with Homepage) -->
+    <header class="bg-white shadow-md py-4 sticky top-0 z-20">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-extrabold text-teal-600 flex items-center">
+                <span class="mr-2 text-3xl">🤖</span> AI Playground <span class="ml-2 text-xl">💡</span>
+            </a>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="index.html" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">Home 🏡</a></li>
+                    <li><a href="#all-adventures-list" class="text-teal-600 font-bold transition-colors duration-200">All Adventures! 🚀</a></li>
+                    <li><a href="index.html#about" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">About AI 🤔</a></li>
+                    <li><a href="index.html#contact" class="text-gray-600 hover:text-teal-600 font-medium transition-colors duration-200">Connect! 👋</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero for All Adventures Page -->
+    <section class="bg-gradient-to-r from-green-400 to-blue-500 text-white py-16 px-4 text-center rounded-b-3xl shadow-xl">
+        <div class="container mx-auto max-w-4xl">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
+                All Our Awesome AI Adventures! 🎉
+            </h1>
+            <p class="text-lg md:text-xl opacity-90">
+                Explore every interactive project and learn something new about Artificial Intelligence! ✨🤖
+            </p>
+        </div>
+    </section>
+
+    <!-- All Projects List Section -->
+    <section id="all-adventures-list" class="py-16 px-4">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl font-bold text-center text-teal-700 mb-12">Dive In & Explore! 🚀</h2>
+
+            <div id="full-projects-container" class="space-y-16">
+                <!-- All projects will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Consistent with Homepage) -->
+    <footer class="bg-gray-800 text-white py-8 px-4 mt-16">
+        <div class="container mx-auto text-center text-sm">
+            <p class="mb-2">&copy; 2025 AI Playground. All rights reserved. Made with ❤️ for young explorers! 🧑‍🚀</p>
+            <p>Contact us: <a href="mailto:hello@aiplayground.com" class="text-blue-300 hover:underline">hello@aiplayground.com</a> 📧</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Project Data (Shared from homepage) ---
+        // This array must be kept consistent with your index.html projects data.
+        const projects = [
+            {
+                id: 'flashcards',
+                title: 'AI Explorer Flashcards',
+                description: 'Learn fundamental AI concepts with interactive flashcards and test your knowledge with a fun quiz. Available in English and Khmer! 📚🧠',
+                longDescription: 'This interactive flashcard game is designed to introduce young learners to the exciting world of Artificial Intelligence. It covers basic AI terms and definitions through engaging flashcards and reinforces learning with a fun multiple-choice quiz. Students can earn badges based on their quiz performance, making learning rewarding. The app supports both English and Khmer languages, making it accessible to a wider audience.',
+                imageUrl: 'https://placehold.co/600x350/A78BFA/FFFFFF?text=Flashcards+%F0%9F%8C%88',
+                link: 'ai-flashcards-game.html', // IMPORTANT: Update this to your actual flashcards app file name
+                skills: ['Digital Literacy', 'Vocabulary', 'Critical Thinking'],
+                grades: ['Grades 4-5', 'Grades 6-7'],
+                tags: ['Beginner', 'Interactive', 'Quiz', 'Multilingual'],
+                resources: [
+                    { type: 'pdf', name: 'Educator Guide for Flashcards', url: 'https://www.example.com/ai_flashcards_educator_guide.pdf' },
+                    { type: 'image', name: 'Flashcard Concepts Infographic', url: 'https://placehold.co/800x600/D1FAE5/10B981?text=Infographic.png' },
+                    { type: 'video', name: 'Intro to AI for Kids (Video)', url: 'https://www.youtube.com/embed/adD9h1_D84M' } // Example YouTube embed URL
+                ]
+            },
+            {
+                id: 'image-recognition',
+                title: 'See Like an AI: Image Recognition',
+                description: 'Discover how AI can "see" and identify objects in pictures. A simple demo to understand computer vision. 👀📸',
+                longDescription: 'Explore the fascinating field of Computer Vision, a part of AI that teaches computers to "see" and interpret images. This interactive demo will show you how AI can identify different objects, animals, or even faces in photos. It’s a great way to understand how technologies like facial recognition or self-driving cars work!',
+                imageUrl: 'https://placehold.co/600x350/FCD34D/334155?text=AI+Eyes+%F0%9F%91%80',
+                link: '#', // Placeholder link for demo
+                skills: ['Computer Vision', 'Pattern Recognition', 'Observation'],
+                grades: ['Grades 6-7', 'Grades 8-9'],
+                tags: ['Intermediate', 'Demo', 'Visual'],
+                resources: [
+                    { type: 'pdf', name: 'Image Recognition Activity Sheet', url: 'https://www.example.com/image_recognition_activity.pdf' },
+                    { type: 'image', name: 'How AI Sees Diagram', url: 'https://placehold.co/800x600/FDE68A/92400E?text=AI+Vision.png' }
+                ]
+            },
+            {
+                id: 'chatbot-basics',
+                title: 'Talk to an AI: Chatbot Basics',
+                description: 'Engage with a simple chatbot to understand how AI can understand and respond to human language. 💬🤖',
+                longDescription: 'Ever wondered how chatbots on websites or smart speakers like Alexa work? This project lets you interact with a basic AI chatbot to understand the fundamentals of Natural Language Processing (NLP). Learn how AI can understand your questions and generate human-like responses, making conversations with machines possible!',
+                imageUrl: 'https://placehold.co/600x350/A78BFA/FFFFFF?text=Chatbot+%F0%9F%92%AC',
+                link: '#', // Placeholder link for demo
+                skills: ['Natural Language Processing', 'Communication', 'Interaction'],
+                grades: ['Grades 5-6', 'Grades 7-8'],
+                tags: ['Beginner', 'Interactive', 'Language'],
+                resources: [
+                    { type: 'pdf', name: 'Chatbot Design Worksheet', url: 'https://www.example.com/chatbot_design_worksheet.pdf' },
+                    { type: 'video', name: 'What is NLP? (Short Video)', url: 'https://www.youtube.com/embed/adD9h1_D84M' }
+                ]
+            },
+            {
+                id: 'scratch-project',
+                title: 'Build Your Own AI Story (Scratch)',
+                description: 'Use MIT Scratch to create a simple interactive story where characters respond using basic AI logic. 💻🐱',
+                longDescription: 'Dive into block-based coding with MIT Scratch and learn how to build simple AI behaviors! In this project, you\'ll create an interactive story where characters can make decisions or respond based on certain inputs, simulating basic Artificial Intelligence. It\'s a fantastic way to understand programming logic and AI concepts in a visual and fun environment. This project is perfect for young coders taking their first steps into AI!',
+                imageUrl: 'https://placehold.co/600x350/FFECB3/6A1B9A?text=Scratch+AI+%F0%9F%92%BB',
+                link: 'https://scratch.mit.edu/projects/YOUR_SCRATCH_PROJECT_ID/embed', // IMPORTANT: Replace with your actual Scratch project embed URL
+                skills: ['Coding', 'Problem Solving', 'Logic', 'Computational Thinking'],
+                grades: ['Grades 4-5', 'Grades 6-7'],
+                tags: ['Beginner', 'Coding', 'Interactive', 'Scratch'],
+                resources: [
+                    { type: 'pdf', name: 'Scratch AI Project Guide', url: 'https://www.example.com/scratch_ai_guide.pdf' },
+                    { type: 'video', name: 'Scratch AI Tutorial', url: 'https://www.youtube.com/embed/adD9h1_D84M' }
+                ]
+            },
+            {
+                id: 'recommendation-systems',
+                title: 'AI Suggestions: Recommendation Systems',
+                description: 'Learn how AI suggests movies, music, or products you might like, based on your preferences. 👍🎬',
+                longDescription: 'Discover the magic behind recommendation systems that power your favorite streaming services and online stores. This project explains how AI analyzes your past choices and preferences to suggest new things you might love. It’s a great way to understand how AI uses data to make personalized suggestions!',
+                imageUrl: 'https://placehold.co/600x350/FCA5A5/FFFFFF?text=AI+Recommends+%F0%9F%91%8D',
+                link: '#', // Placeholder link for demo
+                skills: ['Data Analysis', 'Pattern Recognition', 'Decision Making'],
+                grades: ['Grades 7-8', 'Grades 9-10'],
+                tags: ['Intermediate', 'Data', 'Everyday AI'],
+                resources: []
+            },
+            {
+                id: 'ai-in-games',
+                title: 'Playing with AI: Games & Strategy',
+                description: 'Explore how AI characters in games make decisions and challenge players. 🎮👾',
+                longDescription: 'Have you ever played a video game against a computer opponent and wondered how it "thinks"? This project dives into the basics of AI in games, showing how AI characters are programmed to make strategic decisions, react to players, and provide a fun challenge. Learn about game AI and maybe even get ideas for your own game!',
+                imageUrl: 'https://placehold.co/600x350/81C784/FFFFFF?text=Game+AI+%F0%9F%8E%AE',
+                link: '#', // Placeholder link for demo
+                skills: ['Problem Solving', 'Strategy', 'Logic'],
+                grades: ['Grades 4-5', 'Grades 6-7', 'Grades 8-9'],
+                tags: ['Fun', 'Strategy', 'Interactive'],
+                resources: []
+            },
+            {
+                id: 'ethical-ai',
+                title: 'Being Fair: The Ethics of AI',
+                description: 'A discussion starter on how we can make sure AI is used responsibly and fairly for everyone. ⚖️🤝',
+                longDescription: 'As AI becomes more powerful, it\'s important to think about how we use it responsibly and fairly. This project introduces the concept of AI ethics, prompting discussions about privacy, bias, and making sure AI benefits everyone. It\'s a crucial topic for future AI creators and users!',
+                imageUrl: 'https://placehold.co/600x350/FFD700/334155?text=Fair+AI+%E2%9A%96%EF%B8%8F',
+                link: '#', // Placeholder link for demo
+                skills: ['Ethics', 'Critical Thinking', 'Social Impact'],
+                grades: ['Grades 7-8', 'Grades 9-10', 'Grades 11-12'],
+                tags: ['Advanced', 'Discussion', 'Responsibility'],
+                resources: [
+                    { type: 'pdf', name: 'AI Ethics Discussion Prompts', url: 'https://www.example.com/ai_ethics_prompts.pdf' }
+                ]
+            }
+        ];
+
+        // --- DOM Elements ---
+        const fullProjectsContainer = document.getElementById('full-projects-container');
+
+        /**
+         * Renders all project details with embedded content on the page.
+         */
+        function renderAllProjects() {
+            fullProjectsContainer.innerHTML = ''; // Clear existing content
+
+            projects.forEach(project => {
+                const projectSection = document.createElement('div');
+                projectSection.className = 'bg-white p-8 rounded-2xl shadow-xl mb-12';
+                projectSection.innerHTML = `
+                    <h3 class="text-3xl md:text-4xl font-extrabold text-teal-700 mb-6 text-center">${project.title} 🌟</h3>
+
+                    <!-- Embedded Project -->
+                    <div class="mb-10">
+                        <h4 class="text-2xl font-bold text-teal-600 mb-4 text-center">Try it Out! 🎮</h4>
+                        <iframe class="project-embed" src="${project.link}" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+                    </div>
+
+                    <!-- Project Description -->
+                    <div class="mb-10">
+                        <h4 class="text-2xl font-bold text-teal-600 mb-4">About This Adventure:</h4>
+                        <p class="text-gray-700 text-lg leading-relaxed">${project.longDescription}</p>
+                        <div class="mt-6 flex flex-wrap gap-3">
+                            <span class="bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded-full">Super Skills: ${project.skills.join(', ')} 💪</span>
+                            <span class="bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded-full">Grade Levels: ${project.grades.join(', ')} 🎒</span>
+                        </div>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="font-semibold text-gray-700">Cool Tags:</span>
+                            <span class="flex flex-wrap gap-2">
+                                ${project.tags.map(tag => `<span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${tag}</span>`).join('')}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Downloadable Resources -->
+                    <div class="mb-10">
+                        <h4 class="text-2xl font-bold text-teal-600 mb-4">Download & Learn More! 📖⬇️</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            ${project.resources && project.resources.length > 0 ?
+                                project.resources.map(resource => {
+                                    let iconSvg = '';
+                                    let bgColorClass = '';
+                                    let textColorClass = '';
+                                    switch (resource.type) {
+                                        case 'pdf':
+                                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 resource-icon-color-pdf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>`;
+                                            bgColorClass = 'resource-bg-color-pdf';
+                                            textColorClass = 'text-red-800';
+                                            break;
+                                        case 'image':
+                                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 resource-icon-color-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`;
+                                            bgColorClass = 'resource-bg-color-image';
+                                            textColorClass = 'text-green-800';
+                                            break;
+                                        case 'video':
+                                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 resource-icon-color-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"/><path d="m10 8 6 4-6 4V8z"/></svg>`;
+                                            bgColorClass = 'resource-bg-color-video';
+                                            textColorClass = 'text-blue-800';
+                                            break;
+                                        default:
+                                            iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13.5V4a2 2 0 0 1 2-2h8.5L20 7.5V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6.5zm8.5-11V7H20"/></svg>`;
+                                            bgColorClass = 'bg-gray-50';
+                                            textColorClass = 'text-gray-800';
+                                    }
+                                    return `
+                                        <a href="${resource.url}" target="_blank" rel="noopener noreferrer" class="flex items-center p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 ${bgColorClass} ${textColorClass} font-semibold">
+                                            ${iconSvg}<span>${resource.name}</span>
+                                        </a>
+                                    `;
+                                }).join('')
+                                : `<p class="text-gray-600 italic">No extra super goodies for this adventure yet! 😔</p>`
+                            }
+                        </div>
+                    </div>
+                `;
+                fullProjectsContainer.appendChild(projectSection);
+            });
+        }
+
+        // --- Initial Load ---
+        window.onload = function() {
+            renderAllProjects();
+        };
+    </script>
+</body>
+</html>
